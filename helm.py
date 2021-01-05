@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 
 
-
 class dHELM:
     
     def __init__(self, Y, slack_bus = 146):
@@ -21,8 +20,7 @@ class dHELM:
         self.y_slack = comp(self.y_slack)
         self.Y = comp(self.Y)
         
-
-
+        
     def remove_slack(self, S):
         S1 = S[:,:self.slack_bus]
         S2 = S[:,self.slack_bus+1:]
@@ -96,25 +94,3 @@ class dHELM:
         err = tf.reduce_max(tf.abs(S_ns - S),axis=-1)
         
         return v, S_out, tf.math.log(err), c
-   
-    
-Y = np.load('Y.npy')
-Sg = np.load('Sg.npy')
-Sg = tf.complex(Sg[:,0], Sg[:,1])
-Sd = np.load('Sd.npy')
-Sd = tf.complex(Sd[:,0], Sd[:,1])
-
-h = dHELM(Y)
-
-with tf.GradientTape() as g:
-    
-    g.watch(Sg)
-    
-    S = Sd-Sg
-    S_ns = h.remove_slack(S[None])
-    
-    v, S_out, err, c = h.get_voltage(S_ns, 1.0)
-    
-    dSg = g.gradient(S_out[:,146], Sg)
-    
-    print(dSg)
