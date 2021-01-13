@@ -8,6 +8,8 @@ Usage example (example files extracted from the IEEE 200bus Illinois case are co
 
 ```python
     from helm import dHELM
+    import numpy as np
+    import tensorflow as tf
 
     Y = np.load('Y.npy')
     Sg = np.load('Sg.npy')
